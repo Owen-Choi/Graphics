@@ -14,6 +14,7 @@ window.onload = function init()
 
     //  Configure WebGL
 
+    // viewPost의 앞 2개 parameter는 offset을 뜻함.
     gl.viewport( 0, 0, canvas.width, canvas.height );
     gl.clearColor( 0.0, 0.0, 0.0, 1.0 );
     
