@@ -10,20 +10,6 @@ window.onload = function init()
     if ( !gl ) { alert( "WebGL isn't available" ); }
 
     
-    // Four Vertices
-    
-    // var vertices = [
-    //     vec2( -0.5, 0.5 ), // v0
-	// 	vec2( -0.5, -0.5 ), // v1
-    //     vec2( 0.5, 0.5 ), // v2
-	// 	vec2( 0.5, -0.5 ), //v3
-	// 	vec2( 0.5, 0.5 ), // v4 =v2
-	// 	vec2( -0.5, -0.5 ), // v5=v1        
-    // ];
-
-    //
-    //  Configure WebGL
-    //
     gl.viewport( 0, 0, canvas.width, canvas.height );
     gl.clearColor( 0, 0, 0, 1.0 );
     
@@ -33,13 +19,10 @@ window.onload = function init()
     gl.useProgram( program );
     
     // Load the data into the GPU
-    
-    // var bufferId = gl.createBuffer();
-    // gl.bindBuffer( gl.ARRAY_BUFFER, bufferId );
-    // gl.bufferData( gl.ARRAY_BUFFER, flatten(vertices), gl.STATIC_DRAW );
 
     // Associate out shader variables with our data buffer
-    
+
+    var vResolution = gl.getUniformLocation(program, "vResolution");
     var vPosition = gl.getAttribLocation( program, "vPosition" );
     var vColor = gl.getAttribLocation(program, "vColor");	
     var offset = gl.getUniformLocation(program, "offset");	
@@ -47,12 +30,13 @@ window.onload = function init()
     // gl.vertexAttribPointer( vPosition, 2, gl.FLOAT, false, 0, 0 );
     // gl.enableVertexAttribArray( vPosition );
 
+    gl.uniform2f(vResolution, gl.canvas.width, gl.canvas.height);
 
     gl.clear( gl.COLOR_BUFFER_BIT );
 
     // drawHexagonVertices(vPosition, vColor, offset);
-    drawTriangle(vPosition, vColor, offset);
-
+    drawTrees(vPosition, vColor, offset, colorLoc);
+    drawGround(vPosition, vColor);
     // render();
 };
 
@@ -112,7 +96,6 @@ function drawHexagonVertices(vPosition, vColor, offset) {
     setBuffer(flatten(hexagonVertices)) 	  
 
 
-    // vertex를 2개씩 묶어서 써서 itemSize (2)를 넘긴 것 같다.
 	gl.vertexAttribPointer( vPosition, itemSize, gl.FLOAT, false, 0, 0 );	
     gl.enableVertexAttribArray( vPosition );
     
@@ -127,11 +110,34 @@ function drawHexagonVertices(vPosition, vColor, offset) {
 }
 
 
-const drawTriangle = (vPosition, vColor, offsetLoc) => {
+const drawGround = (vPosition, vColor) => {
+    var ground = [
+        // 2.0, -2.0, 1.0, -0.9, 0, -0,9,
+        // 2.0, -1.0, 1.0, -1.0, 1.0, -0.9
+        // -2.0, -0.5, -2.0, -2.0, 2.0, -0.5,
+        // -2.0, -2.0, 2.0, -0.5, 2.0, -2.0,
+        0, 0.5, 0.5, 0, 0, 0 
+    ]
+
+    setBuffer(flatten(ground));
+
+    var first = 0;
+    var count = 3;
+
+    gl.vertexAttribPointer( vPosition, 2, gl.FLOAT, false, 0, 0 );	
+    gl.enableVertexAttribArray( vPosition );
+    
+	gl.disableVertexAttribArray(vColor);
+	gl.vertexAttrib4f(vColor, 0.24, 0.411, 0.329, 1.0);
+
+    renderwithParams(first, count);
+}
+
+const drawTrees = (vPosition, vColor, offsetLoc) => {
 
 
     var leaf = [
-		0, -0.1, -0.05, 0.05, 0.05, 0.05,   // triangle 
+		0, -0.7, -0.05, -0.75, 0.05, -0.75,   // triangle 
 		];
 	// gl.bufferData(gl.ARRAY_BUFFER, leaf, gl.STATIC_DRAW );	
     setBuffer(flatten(leaf));
@@ -140,12 +146,13 @@ const drawTriangle = (vPosition, vColor, offsetLoc) => {
 	// gl.uniform4fv(colorLoc,[0,1,0,1]); // color (R,G,B,A)	
 	var first = 0 // the starting index in the array of vector points.
 	var count = 3 // the number of indices to be rendered.
+    
 
     gl.vertexAttribPointer( vPosition, 2, gl.FLOAT, false, 0, 0 );	
     gl.enableVertexAttribArray( vPosition );
     
 	gl.disableVertexAttribArray(vColor);
-	gl.vertexAttrib4f(vColor, 0.0, 0.0, 0.0, 1.0);
+	gl.vertexAttrib4f(vColor, 0.24, 0.411, 0.329, 1.0);
 
 	renderwithParams(first, count) // render function
 
@@ -155,10 +162,10 @@ const drawTriangle = (vPosition, vColor, offsetLoc) => {
 	gl.uniform4fv(offsetLoc,[0,-0.1,0,0]); // color (R,G,B,A)	
 	renderwithParams(first, count) // render function
 
-	gl.uniform4fv(offsetLoc,[0.05,0.0,0,0]);
+	gl.uniform4fv(offsetLoc,[0.05, -0.05,0,0]);
 	renderwithParams(first, count)
 
-	gl.uniform4fv(offsetLoc,[0.05,-0.5,0,0]);
+	gl.uniform4fv(offsetLoc,[0.05,-0.1,0,0]);
 	renderwithParams(first, count)
 
 	gl.uniform4fv(offsetLoc,[0.05,-0.,0,0]);
@@ -175,21 +182,16 @@ const drawTriangle = (vPosition, vColor, offsetLoc) => {
     gl.enableVertexAttribArray( vPosition );
     
 	gl.disableVertexAttribArray(vColor);
-	gl.vertexAttrib4f(vColor, 0.0, 0.0, 0.0, 1.0);
+	gl.vertexAttrib4f(vColor, 0.32, 0.18, 0.18, 1.0);
 
 	// color 
-	gl.uniform4fv(offsetLoc,[0,-0.8,0,0]); // color (R,G,B,A)	
-	// gl.uniform4f(colorLoc, 0.5, 0.25, 0, 1); // color (R,G,B,A)
+	gl.uniform4fv(offsetLoc,[0,-0.8,0,0]); // color (R,G,B,A)		
 
 	var first = 0
 	var count = 6
 	renderwithParams(first, count) // render function
 
 	gl.uniform4fv(offsetLoc,[0.05,-0.8,0,0]);
-	// gl.uniform4f(colorLoc, 0.5, 0.25, 0, 1);
-
-	var first = 0;
-	var count = 6;
 
 	renderwithParams(first, count);
 
