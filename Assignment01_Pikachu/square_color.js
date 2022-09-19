@@ -12,20 +12,20 @@ window.onload = function init()
     
     // Four Vertices
     
-    var vertices = [
-        vec2( -0.5, 0.5 ), // v0
-		vec2( -0.5, -0.5 ), // v1
-        vec2( 0.5, 0.5 ), // v2
-		vec2( 0.5, -0.5 ), //v3
-		vec2( 0.5, 0.5 ), // v4 =v2
-		vec2( -0.5, -0.5 ), // v5=v1        
-    ];
+    // var vertices = [
+    //     vec2( -0.5, 0.5 ), // v0
+	// 	vec2( -0.5, -0.5 ), // v1
+    //     vec2( 0.5, 0.5 ), // v2
+	// 	vec2( 0.5, -0.5 ), //v3
+	// 	vec2( 0.5, 0.5 ), // v4 =v2
+	// 	vec2( -0.5, -0.5 ), // v5=v1        
+    // ];
 
     //
     //  Configure WebGL
     //
     gl.viewport( 0, 0, canvas.width, canvas.height );
-    gl.clearColor( 1.0, 1.0, 1.0, 1.0 );
+    gl.clearColor( 0, 0, 0, 1.0 );
     
     //  Load shaders and initialize attribute buffers
     
@@ -43,12 +43,14 @@ window.onload = function init()
     var vPosition = gl.getAttribLocation( program, "vPosition" );
     var vColor = gl.getAttribLocation(program, "vColor");	
     var offset = gl.getUniformLocation(program, "offset");	
-    gl.vertexAttribPointer( vPosition, 2, gl.FLOAT, false, 0, 0 );
-    gl.enableVertexAttribArray( vPosition );
+    // gl.vertexAttribPointer( vPosition, 2, gl.FLOAT, false, 0, 0 );
+    // gl.enableVertexAttribArray( vPosition );
+
+    gl.clear( gl.COLOR_BUFFER_BIT );
 
     drawHexagonVertices(vPosition, vColor, offset);
 
-    render();
+    // render();
 };
 
 
@@ -66,6 +68,28 @@ function setBuffer(data) {
     gl.bufferData( gl.ARRAY_BUFFER, data, gl.STATIC_DRAW );	
 }
 
+const drawBackgroundRect = () => {
+    itemSize = 2;
+    numberOfItem = 2;
+    var RectVertices = [
+        vec2( -0.8, 0.8 ), // v0
+		vec2( -0.8, -0.8 ), // v1
+        vec2( 0.8, 0.8 ), // v2
+		vec2( 0.8, -0.8 ), //v3
+		vec2( 0.8, 0.8 ), // v4 =v2
+		vec2( -0.8, -0.8 ), // v5=v1        
+    ];
+    setBuffer(flatten(RectVertices))
+
+    gl.vertexAttribPointer( vPosition, itemSize, gl.FLOAT, false, 0, 0 );	
+    gl.enableVertexAttribArray( vPosition );
+    
+	gl.disableVertexAttribArray(vColor);    // We disable the vertex attrib array since we want to use a constant color for all vertices in the hexagon
+	gl.vertexAttrib4f(vColor, 0.0, 0.0, 0.0, 1.0);  //specify constant values for generic vertex attributes.
+
+	gl.drawArrays(gl.LINE_LOOP, 0, numberOfItem); 	
+}
+
 
 function drawHexagonVertices(vPosition, vColor, offset) {
     // hexagon vertices	 
@@ -77,10 +101,12 @@ function drawHexagonVertices(vPosition, vColor, offset) {
         vec2(-0.6,  0.8), //v2
         vec2(-0.7,  0.6), //v3
         vec2(-0.6,  0.4), //v4
-        vec2(-0.4,  0.4), //v5        
+        vec2(-0.4,  0.4), //v5                
     ]; 
     setBuffer(flatten(hexagonVertices)) 	  
 
+
+    // vertex를 2개씩 묶어서 써서 itemSize (2)를 넘긴 것 같다.
 	gl.vertexAttribPointer( vPosition, itemSize, gl.FLOAT, false, 0, 0 );	
     gl.enableVertexAttribArray( vPosition );
     

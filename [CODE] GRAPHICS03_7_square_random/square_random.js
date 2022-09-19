@@ -29,6 +29,7 @@ window.onload = function init()
   gl.enableVertexAttribArray( vPosition );
 
 	// we added a uniform called vResolution. 
+  // vResolution은 normalization할때 필요해서 선언함
 	var vResolution = gl.getUniformLocation(program, "vResolution");
 	var color = gl.getUniformLocation(program, "color");
 	
@@ -44,6 +45,7 @@ window.onload = function init()
 			gl, randomInt(300), randomInt(300), randomInt(300), randomInt(300));
 
 		// Set a random color.
+    // uniform4f로 html의 uniform type color를 지정해줌
 		gl.uniform4f(color, Math.random(), Math.random(), Math.random(), 1);
 
 		// Draw the rectangle.
@@ -69,6 +71,7 @@ function setRectangle(gl, x, y, width, height) {
   // but so far we only have one buffer. If we had more than one
   // buffer we'd want to bind that buffer to `ARRAY_BUFFER` first.
  
+  // 삼각형 2개로 사각형을 만들거라 6개의 점이 생김
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
      x1, y1,
      x2, y1,
