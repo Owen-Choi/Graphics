@@ -54,14 +54,25 @@ window.onload = function init() {
         
     ]);
 
+    var sky = 1.0
+    var redAnim = 0.7
+    var greenAnim = 0.6
+    var blueAnim = 0.4
+
     var colors = [
         //background
-        vec4(1.0, 1.0, 1.0, 1.0),
-        vec4(0.0, 0.4, 0.7, 0.6),
-        vec4(1.0, 1.0, 1.0, 1.0),
-        vec4(0.588, 0.70, 0.874, 0.6),
-        vec4(1.0, 1.0, 1.0, 1.0),
-        vec4(0.0, 0.4, 0.7, 0.6),
+        // vec4(1.0, 1.0, 1.0, 1.0),
+        // vec4(0.0, 0.4, 0.7, 0.6),
+        // vec4(1.0, 1.0, 1.0, 1.0),
+        // vec4(0.588, 0.70, 0.874, 0.6),
+        // vec4(1.0, 1.0, 1.0, 1.0),
+        // vec4(0.0, 0.4, 0.7, 0.6),
+        vec4(redAnim, greenAnim, blueAnim, 1.0),
+        vec4(0.0, 0.0, 0.0, 1.0),
+        vec4(sky, 0.0, 0.0, 1.0),
+        vec4(0.0, 0.0, 0.0, 1.0),
+        vec4(sky, 0.0, 0.0, 1.0),
+        vec4(redAnim, greenAnim, blueAnim, 1.0),
 
         //small house
         //rectangle
@@ -163,7 +174,6 @@ window.onload = function init() {
         vec4(1.0, 1.0, 1.0, 1.0),
         vec4(1.0, 1.0, 1.0, 1.0),
         vec4(1.0, 1.0, 1.0, 1.0),
-        
     ];
 
     //Configure WebGL
@@ -242,20 +252,23 @@ window.onload = function init() {
     gl.drawArrays(gl.TRIANGLES, 57, 9);
     gl.drawArrays(gl.TRIANGLES, 66, 6);
 
+    //star offset for animation
+    var snowAnim = 0.0;
+
     //star
-    gl.uniform4fv(offsetLoc, [0.33, 0.5, 0, 0]);
+    gl.uniform4fv(offsetLoc, [0.33, 0.5 - snowAnim, 0, 0]);
     gl.drawArrays(gl.TRIANGLES, 72, 6);
 
     //size option
     gl.uniform4fv(size, [0.8, 0.8, 1, 1]);
 
     //star
-    gl.uniform4fv(offsetLoc, [-0.75, 0.4, 0, 0]);
+    gl.uniform4fv(offsetLoc, [-0.75, 0.4 - snowAnim, 0, 0]);
     gl.drawArrays(gl.TRIANGLES, 72, 6);
 
-    //star
-    gl.uniform4fv(offsetLoc, [0.25, -0.65, 0, 0]);
-    gl.drawArrays(gl.TRIANGLES, 72, 6);
+    // star
+    // gl.uniform4fv(offsetLoc, [0.25, -0.65 - snowAnim, 0, 0]);
+    // gl.drawArrays(gl.TRIANGLES, 72, 6);
 
     //star
     gl.uniform4fv(offsetLoc, [0.5, 0.8, 0, 0]);
@@ -281,7 +294,7 @@ window.onload = function init() {
     gl.drawArrays(gl.TRIANGLES, 72, 6);
 
     //star
-    gl.uniform4fv(offsetLoc, [-0.3, -0.8, 0, 0]);
+    gl.uniform4fv(offsetLoc, [-0.3, 0.3, 0, 0]);
     gl.drawArrays(gl.TRIANGLES, 72, 6);
 
     //star
@@ -296,10 +309,11 @@ window.onload = function init() {
     gl.uniform4fv(size, [0.2, 0.2, 1, 1]);
 
     //star
-    gl.uniform4fv(offsetLoc, [-0.7, 0.7, 0, 0]);
+    gl.uniform4fv(offsetLoc, [0, 0.7, 0, 0]);
     gl.drawArrays(gl.TRIANGLES, 72, 6);
 
     // star
-    gl.uniform4fv(offsetLoc, [0.9, -0.6, 0, 0]);
+    gl.uniform4fv(offsetLoc, [0.3, 0.6, 0, 0]);
     gl.drawArrays(gl.TRIANGLES, 72, 6);
+
 };
