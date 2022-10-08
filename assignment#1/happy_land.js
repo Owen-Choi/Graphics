@@ -5,7 +5,13 @@ var size;
 var snowPos;
 var snowAnim = 0.0;
 var flag = false;
+var reverseFlag = false;
+var index = 0;
 
+var rand1 = Math.floor(Math.random() * 3) + 1;
+var rand2 = Math.floor(Math.random() * 2) + 1;
+var rand3 = Math.floor(Math.random() * 1) + 1;
+var rand4 = Math.floor(Math.random() * 3) + 1;
 
 window.onload = function init() {
     var canvas = document.getElementById("gl-canvas");
@@ -17,8 +23,11 @@ window.onload = function init() {
 
     var vertices = new Float32Array([
         //background
-        -2.0, 2.0, -2.0, -1.5, 2.0, 2.0, //triangle
-        -2.0, -1.5, 2.0, 2.0, 2.0, -1.5, //triangle
+        // -2.0, 2.0, -2.0, -1.5, 2.0, 2.0, //triangle
+        // -2.0, -1.5, 2.0, 2.0, 2.0, -1.5, //triangle
+
+        -4.0, 4.0, -4.0, -3.0, 4.0, 4.0, //triangle
+        -4.0, -3.0, 4.0, 4.0, 4.0, -3.0, //triangle
 
         //small house
         -0.6, -0.5, -0.6, -0.3, -0.2, -0.3, //triangle
@@ -60,7 +69,7 @@ window.onload = function init() {
 
     ]);
 
-    var sky = 1.0
+    var sky = 0.0
     var redAnim = 0.7
     var greenAnim = 0.6
     var blueAnim = 0.4
@@ -182,6 +191,18 @@ window.onload = function init() {
         vec4(1.0, 1.0, 1.0, 1.0),
     ];
 
+    // canvas.addEventListener("mousedown", function(event){
+    //     gl.bindBuffer( gl.ARRAY_BUFFER, vertexPositionBufferId);
+    //     var t = vec2(2*event.clientX/canvas.width-1,
+    //         2*(canvas.height-event.clientY)/canvas.height-1);
+    //     gl.bufferSubData(gl.ARRAY_BUFFER, 8*index, flatten(t));
+    //
+    //     gl.bindBuffer(gl.ARRAY_BUFFER, vertexColorBufferId);
+    //     t = vec4(0.0,0.0,0.0,1.0);
+    //     gl.bufferSubData(gl.ARRAY_BUFFER, 16*index, flatten(t));
+    //     index++;
+    // } );
+
     //Configure WebGL
     gl.viewport(0, 0, canvas.width, canvas.height);
     gl.clearColor(0.0, 0.0, 1.0, 1.0);
@@ -218,27 +239,46 @@ window.onload = function init() {
     size = gl.getUniformLocation(program, "size");
 
     document.getElementById("down").onclick = function() {
-        snowAnim += 0.05;
-        flag = true;
+        flag = !flag;
+        reverseFlag = false;
     };
+
+    document.getElementById("up").onclick = function() {
+        reverseFlag = !reverseFlag;
+        flag = false;
+    };
+
+    document.getElementById("slider").onchange = function(event) {
+        sky = event.target.value;
+        var vColor = gl.getAttribLocation(program, "vColor");
+        gl.vertexAttribPointer(vColor, 4, gl.FLOAT, false, 0, 0);
+        gl.enableVertexAttribArray(vColor);
+    }
 
     render()
     intervalId = setInterval(render,100);
 }
 
+
 function render() {
 
-    snowPos = [0.5 - snowAnim, 0.4 - snowAnim, 0.8 - snowAnim, 0.9 - snowAnim, 0.9 - snowAnim,
-        0.9 - snowAnim, 0.7 - snowAnim, 0.3 - snowAnim, 0.0 - snowAnim, 0.7 - snowAnim]
+    snowPos = [0.5- snowAnim * rand1, 0.4- snowAnim * rand2, 0.8- snowAnim * rand3, 0.9- snowAnim * rand4, 0.9- snowAnim * rand1,
+        0.9- snowAnim * rand1, 0.7- snowAnim * rand2, 0.3- snowAnim * rand3, 0.0 - snowAnim * rand4, 0.7- snowAnim * rand1]
 
     for(var i=0; i<snowPos.length; i++) {
-        if(snowPos[i] < 0) {
-            snowPos[i] += 2.0;
+        if(snowPos[i] < -1) {
+            snowAnim = 0.0;
+        } else if(snowPos[i] > 1.5) {
+            snowAnim = 0.0;
         }
     }
 
     if(flag) {
         snowAnim += 0.01;
+    }
+
+    if(reverseFlag) {
+        snowAnim -= 0.01;
     }
 
     //size option
