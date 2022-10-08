@@ -1,5 +1,11 @@
 var gl;
 var points;
+var offsetLoc;
+var size;
+var snowPos;
+var snowAnim = 0.0;
+var flag = false;
+
 
 window.onload = function init() {
     var canvas = document.getElementById("gl-canvas");
@@ -11,8 +17,8 @@ window.onload = function init() {
 
     var vertices = new Float32Array([
         //background
-        -1.0, 1.0, -1.0, -0.5, 1.0, 1.0, //triangle
-        -1.0, -0.5, 1.0, 1.0, 1.0, -0.5, //triangle
+        -2.0, 2.0, -2.0, -1.5, 2.0, 2.0, //triangle
+        -2.0, -1.5, 2.0, 2.0, 2.0, -1.5, //triangle
 
         //small house
         -0.6, -0.5, -0.6, -0.3, -0.2, -0.3, //triangle
@@ -51,7 +57,7 @@ window.onload = function init() {
         //star
         0, 0.05, -0.1, -0.1, 0.1, -0.1, //triangle
         -0.1, 0.0, 0.1, 0.0, 0, -0.15 //triangle
-        
+
     ]);
 
     var sky = 1.0
@@ -206,14 +212,37 @@ window.onload = function init() {
     gl.clear(gl.COLOR_BUFFER_BIT);
 
     //uniform variable
-    var offsetLoc = gl.getUniformLocation(program, "offset");
+    offsetLoc = gl.getUniformLocation(program, "offset");
 
     //uniform variable
-    var size = gl.getUniformLocation(program, "size");
+    size = gl.getUniformLocation(program, "size");
+
+    document.getElementById("down").onclick = function() {
+        snowAnim += 0.05;
+        flag = true;
+    };
+
+    render()
+    intervalId = setInterval(render,100);
+}
+
+function render() {
+
+    snowPos = [0.5 - snowAnim, 0.4 - snowAnim, 0.8 - snowAnim, 0.9 - snowAnim, 0.9 - snowAnim,
+        0.9 - snowAnim, 0.7 - snowAnim, 0.3 - snowAnim, 0.0 - snowAnim, 0.7 - snowAnim]
+
+    for(var i=0; i<snowPos.length; i++) {
+        if(snowPos[i] < 0) {
+            snowPos[i] += 2.0;
+        }
+    }
+
+    if(flag) {
+        snowAnim += 0.01;
+    }
 
     //size option
-    gl.uniform4fv(size, [1, 1, 1, 1]);
-
+    // gl.uniform4fv(size, [1, 1, 1, 1]);
     //background
     gl.drawArrays(gl.TRIANGLES, 0, 6);
 
@@ -252,18 +281,17 @@ window.onload = function init() {
     gl.drawArrays(gl.TRIANGLES, 57, 9);
     gl.drawArrays(gl.TRIANGLES, 66, 6);
 
-    //star offset for animation
-    var snowAnim = 0.0;
+
 
     //star
-    gl.uniform4fv(offsetLoc, [0.33, 0.5 - snowAnim, 0, 0]);
+    gl.uniform4fv(offsetLoc, [0.33, snowPos[0], 0, 0]);
     gl.drawArrays(gl.TRIANGLES, 72, 6);
 
     //size option
     gl.uniform4fv(size, [0.8, 0.8, 1, 1]);
 
     //star
-    gl.uniform4fv(offsetLoc, [-0.75, 0.4 - snowAnim, 0, 0]);
+    gl.uniform4fv(offsetLoc, [-0.75, snowPos[1], 0, 0]);
     gl.drawArrays(gl.TRIANGLES, 72, 6);
 
     // star
@@ -271,49 +299,50 @@ window.onload = function init() {
     // gl.drawArrays(gl.TRIANGLES, 72, 6);
 
     //star
-    gl.uniform4fv(offsetLoc, [0.5, 0.8, 0, 0]);
+    gl.uniform4fv(offsetLoc, [0.5, snowPos[2], 0, 0]);
     gl.drawArrays(gl.TRIANGLES, 72, 6);
 
     //size option
-    gl.uniform4fv(size, [0.4, 0.4, 1, 1]);
+    // gl.uniform4fv(size, [0.4, 0.4, 1, 1]);
 
     //star
-    gl.uniform4fv(offsetLoc, [-0.3, 0.9, 0, 0]);
+    gl.uniform4fv(offsetLoc, [-0.3, snowPos[3], 0, 0]);
     gl.drawArrays(gl.TRIANGLES, 72, 6);
 
     //star
-    gl.uniform4fv(offsetLoc, [0.6, -0.9, 0, 0]);
+    gl.uniform4fv(offsetLoc, [0.6, snowPos[4], 0, 0]);
     gl.drawArrays(gl.TRIANGLES, 72, 6);
 
     //star
-    gl.uniform4fv(offsetLoc, [-0.85, 0.9, 0, 0]);
+    gl.uniform4fv(offsetLoc, [-0.85, snowPos[5], 0, 0]);
     gl.drawArrays(gl.TRIANGLES, 72, 6);
 
     //star
-    gl.uniform4fv(offsetLoc, [-0.6, 0.7, 0, 0]);
+    gl.uniform4fv(offsetLoc, [-0.6, snowPos[6], 0, 0]);
     gl.drawArrays(gl.TRIANGLES, 72, 6);
 
     //star
-    gl.uniform4fv(offsetLoc, [-0.3, 0.3, 0, 0]);
+    gl.uniform4fv(offsetLoc, [-0.3, snowPos[7], 0, 0]);
     gl.drawArrays(gl.TRIANGLES, 72, 6);
 
     //star
-    gl.uniform4fv(offsetLoc, [0.0, 0.0, 0, 0]);
+    gl.uniform4fv(offsetLoc, [0.0, snowPos[8], 0, 0]);
     gl.drawArrays(gl.TRIANGLES, 72, 6);
 
     //star
-    gl.uniform4fv(offsetLoc, [-0.1, 0.1, 0, 0]);
-    gl.drawArrays(gl.TRIANGLES, 72, 6);
+    // gl.uniform4fv(offsetLoc, [-0.1, snowPos[9], 0, 0]);
+    // gl.drawArrays(gl.TRIANGLES, 72, 6);
 
     //size option
-    gl.uniform4fv(size, [0.2, 0.2, 1, 1]);
+    // gl.uniform4fv(size, [0.2, 0.2, 1, 1]);
 
     //star
-    gl.uniform4fv(offsetLoc, [0, 0.7, 0, 0]);
+    gl.uniform4fv(offsetLoc, [0, snowPos[9], 0, 0]);
     gl.drawArrays(gl.TRIANGLES, 72, 6);
 
     // star
-    gl.uniform4fv(offsetLoc, [0.3, 0.6, 0, 0]);
-    gl.drawArrays(gl.TRIANGLES, 72, 6);
+    // gl.uniform4fv(offsetLoc, [0.3, snowPos[11], 0, 0]);
+    // gl.drawArrays(gl.TRIANGLES, 72, 6);
 
-};
+    // requestAnimFrame(render)
+}
