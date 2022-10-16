@@ -238,17 +238,17 @@ window.onload = function init() {
     //uniform variable
     size = gl.getUniformLocation(program, "size");
 
-    document.getElementById("down").onclick = function() {
+    document.getElementById("down").onclick = function () {
         flag = !flag;
         reverseFlag = false;
     };
 
-    document.getElementById("up").onclick = function() {
+    document.getElementById("up").onclick = function () {
         reverseFlag = !reverseFlag;
         flag = false;
     };
 
-    document.getElementById("slider").onchange = function(event) {
+    document.getElementById("slider").onchange = function (event) {
         sky = event.target.value;
         var vColor = gl.getAttribLocation(program, "vColor");
         gl.vertexAttribPointer(vColor, 4, gl.FLOAT, false, 0, 0);
@@ -256,28 +256,28 @@ window.onload = function init() {
     }
 
     render()
-    intervalId = setInterval(render,100);
+    intervalId = setInterval(render, 100);
 }
 
 
 function render() {
 
-    snowPos = [0.5- snowAnim * rand1, 0.4- snowAnim * rand2, 0.8- snowAnim * rand3, 0.9- snowAnim * rand4, 0.9- snowAnim * rand1,
-        0.9- snowAnim * rand1, 0.7- snowAnim * rand2, 0.3- snowAnim * rand3, 0.0 - snowAnim * rand4, 0.7- snowAnim * rand1]
+    snowPos = [0.5 - snowAnim * rand1, 0.4 - snowAnim * rand2, 0.8 - snowAnim * rand3, 0.9 - snowAnim * rand4, 0.9 - snowAnim * rand1,
+    0.9 - snowAnim * rand1, 0.7 - snowAnim * rand2, 0.3 - snowAnim * rand3, 0.0 - snowAnim * rand4, 0.7 - snowAnim * rand1]
 
-    for(var i=0; i<snowPos.length; i++) {
-        if(snowPos[i] < -1) {
+    for (var i = 0; i < snowPos.length; i++) {
+        if (snowPos[i] < -1) {
             snowAnim = 0.0;
-        } else if(snowPos[i] > 1.5) {
+        } else if (snowPos[i] > 1.5) {
             snowAnim = 0.0;
         }
     }
 
-    if(flag) {
+    if (flag) {
         snowAnim += 0.01;
     }
 
-    if(reverseFlag) {
+    if (reverseFlag) {
         snowAnim -= 0.01;
     }
 
